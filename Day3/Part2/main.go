@@ -10,16 +10,29 @@ import (
 )
 
 type claim struct {
-	id int64
-	lp int64
-	tp int64
-	w  int64
-	h  int64
+	id int
+	lp int
+	tp int
+	w  int
+	h  int
 }
 
 type cell struct {
-	x int64
-	y int64
+	x int
+	y int
+}
+
+func mapify(c []claim) (res map[cell][]int) {
+	res = make(map[cell][]int)
+	for _, v := range c {
+		for x := v.lp; x < v.lp+v.w; x++ {
+			for y := v.tp; y < v.tp+v.h; y++ {
+				res[cell{x, y}] = append(res[cell{x, y}], v.id)
+			}
+		}
+	}
+
+	return
 }
 
 func main() {
@@ -50,51 +63,27 @@ func main() {
 		})
 	}
 
-	var cells []cell
-	var oCells []cell
-	var notOv claim
+	m := mapify(claims)
+	res := 0
 
+outer:
 	for _, v := range claims {
-		o := false
-		for i := v.lp; i < v.lp+v.w; i++ {
-			for j := v.tp; j < v.tp+v.h; j++ {
-				if Contains(cells, i, j) {
-					o = true
-					oCells = AppendIfMissing(oCells, cell{x: i, y: j})
-				} else {
-					cells = append(cells, cell{x: i, y: j})
+		for x := v.lp; x < v.lp+v.w; x++ {
+			for y := v.tp; y < v.tp+v.h; y++ {
+				if len(m[cell{x, y}]) > 1 {
+					continue outer
 				}
 			}
 		}
 
-		if !o {
-			notOv = v
-		}
+		res = v.id
 	}
 
-	fmt.Println(notOv)
+	fmt.Println(res)
 }
 
-func parseInt(s string) int64 {
+func parseInt(s string) int {
 	s = strings.Replace(s, " ", "", -1)
-	i, _ := strconv.ParseInt(s, 10, 64)
-	return i
-}
-
-func Contains(a []cell, x int64, y int64) bool {
-	for _, n := range a {
-		if n.x == x && n.y == y {
-			return true
-		}
-	}
-	return false
-}
-
-func AppendIfMissing(slice []cell, i cell) []cell {
-	for _, ele := range slice {
-		if ele == i {
-			return slice
-		}
-	}
-	return append(slice, i)
+	i, _ := strconv.ParseInt(s, 10, 32)
+	return int(i)
 }
