@@ -35,7 +35,7 @@ func mapify(c []claim) (res map[cell][]int) {
 	return
 }
 
-func main() {
+func process() (res int) {
 	file, err := os.Open("../input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -64,7 +64,6 @@ func main() {
 	}
 
 	m := mapify(claims)
-	res := 0
 
 outer:
 	for _, v := range claims {
@@ -79,7 +78,12 @@ outer:
 		res = v.id
 	}
 
-	fmt.Println(res)
+	return res
+}
+
+func main() {
+	r := process()
+	fmt.Println(r)
 }
 
 func parseInt(s string) int {
