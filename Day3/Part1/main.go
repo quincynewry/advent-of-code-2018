@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type claim struct {
@@ -36,6 +37,8 @@ func mapify(c []claim) (res map[cell][]int) {
 }
 
 func main() {
+	start := time.Now()
+
 	file, err := os.Open("../input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -71,6 +74,9 @@ func main() {
 			res++
 		}
 	}
+
+	elapsed := time.Since(start)
+	log.Printf("Time %s", elapsed)
 
 	fmt.Println(res)
 }

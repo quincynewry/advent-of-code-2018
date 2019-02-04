@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type claim struct {
@@ -82,7 +83,12 @@ outer:
 }
 
 func main() {
+	start := time.Now()
 	r := process()
+
+	elapsed := time.Since(start)
+	log.Printf("Time %s", elapsed)
+
 	fmt.Println(r)
 }
 
